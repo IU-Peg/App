@@ -14,6 +14,8 @@ import { AppLoading } from 'expo';
 import Routes from './src/routes';
 import useCachedResources from './src/util/useCachedResources';
 import AppProvider from './src/hooks';
+import { Provider } from 'react-redux';
+import { Store } from './src/redux';
 
 const App: React.FC = () => {
   const isLoadingComplete = useCachedResources();
@@ -32,18 +34,20 @@ const App: React.FC = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <AppProvider>
-        <StatusBar
-          backgroundColor="#F9FAFB"
-          translucent
-          style={Platform.OS === 'ios' ? 'inverted' : 'auto'}
-        />
-        <View style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
-          <Routes />
-        </View>
-      </AppProvider>
-    </SafeAreaProvider>
+    <Provider store={Store}>
+      <SafeAreaProvider>
+        <AppProvider>
+          <StatusBar
+            backgroundColor="#F9FAFB"
+            translucent
+            style={Platform.OS === 'ios' ? 'inverted' : 'auto'}
+          />
+          <View style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
+            <Routes />
+          </View>
+        </AppProvider>
+      </SafeAreaProvider>
+    </Provider>
   );
 };
 
