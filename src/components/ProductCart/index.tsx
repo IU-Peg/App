@@ -1,20 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import Search from '../Search';
-import TextRegular from '../Text/TextRegular';
+import { Image, View } from 'react-native';
 import { useCart } from '../../hooks/useCartContext';
 import { formatCoin } from '../../util/formatValue';
+import Search from '../Search';
+import TextRegular from '../Text/TextRegular';
 import {
-  Container,
-  Product,
-  ItensList,
+  CartTitle, Container,
+
+  ItensList, Product,
+
   ProductDescription,
   ProductList,
   ProductPrice,
   TextName,
-  TextQuantity,
-  TextPrice,
-  CartTitle,
+
+  TextPrice, TextQuantity
 } from './styles';
 
 export interface ProductProps {
@@ -90,7 +91,7 @@ const ProductCart: React.FC<ComponentProps> = ({ toggleSearch }) => {
             <ProductList onPress={() => navigateToProductDetails(item.id)}>
               <ProductDescription>
                 <TextName>
-                  <TextRegular style={{ color: '#a6aab4' }}>iu: </TextRegular>
+                  <TextRegular style={{ color: '#a6aab4' }}>Nome: </TextRegular>
                   {item.name}
                 </TextName>
                 <TextQuantity>{item.quantity} unidade</TextQuantity>
