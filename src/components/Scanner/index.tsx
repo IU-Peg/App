@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Alert, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import styled from 'styled-components/native';
@@ -12,6 +11,8 @@ import {
   scalePercentageToDP as s,
   widthPercentageToDP as w,
 } from '../../util/percentageToDP';
+import { Camera } from 'expo-camera';
+import { BarCodeScanner } from 'expo';
 
 interface ComponentProps {
   statusCamera: boolean;
@@ -64,6 +65,7 @@ const Scanner = ({ statusCamera }: ComponentProps): JSX.Element => {
   }
 
   const handleBarCodeScanned = ({ data }: BarCodeScannerResult): void => {
+    console.log("DATA " + JSON.stringify(data))
     const product = findProductByID(data);
 
     const sucess = (): void => {
@@ -86,13 +88,32 @@ const Scanner = ({ statusCamera }: ComponentProps): JSX.Element => {
     setScanned(true);
     return product ? sucess() : notFound();
   };
+  
+  const teste = async () => {
+    const dados = await Camera.isAvailableAsync()
+    console.log(JSON.stringify(dados))
+  }
+
+  useEffect(()=>{
+    teste()
+  },[])
 
   return (
     <Container useNativeDriver status={statusCamera}>
-      <BarCodeScanner
+      <Camera
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        ratio='16:9'
         style={StyleSheet.absoluteFillObject}
+        barCodeScannerSettings={{
+          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.ean13],
+        }}
       />
+      {/**
+         * <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
+       */}
       {scanned && (
         <Button
           title="Toque aqui para escanear novamente"
