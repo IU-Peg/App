@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image } from 'react-native';
-import JackDanielsImg from '../../assets/jack-daniels.png';
+import { IProduct } from '../../@types/product';
 import { useCart } from '../../hooks/useCartContext';
 import { formatCoin } from '../../util/formatValue';
 import {
@@ -30,13 +30,8 @@ import {
   IconCheck,
 } from './styles';
 
-interface ProcuctDetailsType {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
+interface ProcuctDetailsType extends IProduct{
   formattedPrice?: string;
-  quantity: number;
 }
 
 interface Params {
@@ -103,7 +98,7 @@ const ProductDetails: React.FC = () => {
           <ProductContainer>
             <Product>
               <ProductImageContainer>
-                <Image style={{ margin: 20 }} source={JackDanielsImg} />
+                <Image style={{ margin: 20 }} width={300} height={200} source={{uri: productDetails.image_url}} />
               </ProductImageContainer>
 
               <ProductContent>

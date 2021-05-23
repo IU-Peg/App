@@ -1,20 +1,23 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import { useCart } from '../../../hooks/useCartContext';
-import findProductByID from '../../../util/findProductByID';
-import { Container, Content, InputStyled, ContentButtons } from './styles';
+import { useReduxDispatch, useReduxSelector } from '../../../redux';
+import { getProduct } from '../../../redux/actions/cart';
 import {
   heightPercentageToDP as h,
   scalePercentageToDP as s,
-  widthPercentageToDP as w,
+  widthPercentageToDP as w
 } from '../../../util/percentageToDP';
+import { Container, Content, ContentButtons, InputStyled } from './styles';
 
 const BarCodeInput = (): JSX.Element => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-
+  const [EAN, setEANValue] = useState('');
+  const dispatch = useReduxDispatch()
+  const product = useReduxSelector(state => state.cart.product)
+  
   const { addItem } = useCart();
 
   const sameStyles = {
@@ -24,32 +27,24 @@ const BarCodeInput = (): JSX.Element => {
   };
 
   const handleInputText = useCallback((text: string) => {
-    setInputValue(text);
+    setEANValue(text);
   }, []);
 
-  const toggleModalAddItem = useCallback((): void => {
-    const product = findProductByID(inputValue);
-    setInputValue('');
-    Keyboard.dismiss();
-
-    const succes = (): void => {
+  useEffect(()=>{
+    if (product){
       addItem(product);
       setModalVisible(!isModalVisible);
-    };
-
-    const notFound = (): void => {
-      Alert.alert(
-        'Erro no código de barras',
-        'Ocorreu um erro ao encontrar o código de barras, tente novamente',
-      );
-    };
-
-    return product ? succes() : notFound();
-  }, [isModalVisible, addItem, inputValue]);
+    }
+  },[product])
+  
+  const toggleModalAddItem = useCallback((): void => {
+    console.log("EAN " + EAN)
+    dispatch(getProduct(EAN))
+  }, [isModalVisible, addItem, EAN]);
 
   const toggleModal = useCallback((): void => {
     setModalVisible(!isModalVisible);
-    setInputValue('');
+    setEANValue('');
     Keyboard.dismiss();
   }, [isModalVisible]);
 
@@ -82,7 +77,7 @@ const BarCodeInput = (): JSX.Element => {
             <Content>
               <InputStyled
                 onChangeText={text => handleInputText(text)}
-                value={inputValue}
+                value={EAN}
                 placeholder="Digite o código de barras do produto"
               />
               <ContentButtons>
